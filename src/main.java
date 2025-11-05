@@ -1,8 +1,9 @@
 import java.io.FileNotFoundException;
 import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 public class main {
-    public static void main (String[]args){
+    public static void main (String[]args) throws IOException {
         boolean[][] schedule = new boolean[8][60];
         AppointmentBook a = new AppointmentBook(schedule);
         for (int i = 10; i < 15; i++) schedule[1][i] = true;
@@ -29,22 +30,33 @@ public class main {
             b.printPeriod(period);
             period++;
         }
+        System.out.println(read());
     }
-//    public static int read() throws FileNotFoundException {
-//        int numofschedulesreserved;
-//        AppointmentBook[] books = new AppointmentBook[1000];
-//        File f = new File("Schedules.txt");
-//        Scanner s = new Scanner(f);
-//        int index = 0;
-//        while (s.hasNextLine()) {
-//            boolean[][] schedules = new boolean[8][60];
-//            for (int i = 0; i < 60; i++){
-//                boolean x = s.nextBoolean();
-//                boolean print = s.nextBoolean();
-//                System.out.println(print);
-//
-//            }
-//        }
-//        return 0;
-//    }
+    public static int read () throws FileNotFoundException {
+        int meetings = 0;
+        File f = new File("Schedules.txt");
+        Scanner s = new Scanner(f);
+        String schedule = "";
+        while (s.hasNext()) {
+            while (s.hasNextBoolean()) {
+                schedule += s.nextBoolean() + " ";
+            }
+            AppointmentBook a = new AppointmentBook(readSchedule(schedule));
+            schedule = "";
+            if (a.makeAppointment(s.nextInt(), s.nextInt(), s.nextInt())) {
+                meetings++;
+            }
+        }
+        return meetings;
+    }
+    public static boolean[][] readSchedule(String lines) {
+        Scanner s = new Scanner(lines);
+        boolean[][] schedule = new boolean[8][60];
+        for (int i = 0; i < schedule.length; i++) {
+            for (int j = 0; j < schedule[i].length; j++) {
+                schedule[i][j] = s.nextBoolean();
+            }
+        }
+        return schedule;
+    }
 }
